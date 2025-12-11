@@ -1,18 +1,13 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import type { ReactNode } from "react";
+// src/context/CartContext.tsx
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 import { toast } from "react-toastify";
-
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  images: string[];
-  brand: string;
-  category: string;
-  description: string;
-  discountPercentage: number;
-  quantity?: number;
-}
+import type { Product } from "../types/product";
 
 interface CartContextType {
   cartItem: Product[];
@@ -95,7 +90,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <CartContext.Provider
-      value={{ cartItem, setCartItem, addToCart, updateQuantity, deleteItem, clearCart }}
+      value={{
+        cartItem,
+        setCartItem,
+        addToCart,
+        updateQuantity,
+        deleteItem,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>
@@ -107,4 +109,4 @@ export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) throw new Error("useCart must be used inside <CartProvider>");
   return context;
-}
+};

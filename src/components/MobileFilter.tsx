@@ -1,4 +1,4 @@
-import { useState } from "react";
+import type { FC, ChangeEvent } from "react";
 import { FaFilter } from "react-icons/fa6";
 import { getData } from "../context/DataContext";
 import { Input } from "@/components/ui/input";
@@ -23,11 +23,11 @@ interface MobileFilterProps {
   setPriceRange: (val: [number, number]) => void;
   category: string;
   setCategory: (val: string) => void;
-  handleBrandChange: (e: any) => void;
-  handleCategoryChange: (e: any) => void;
+  handleBrandChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  handleCategoryChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const MobileFilter: React.FC<MobileFilterProps> = ({
+const MobileFilter: FC<MobileFilterProps> = ({
   openFilter,
   setOpenFilter,
   search,
@@ -38,7 +38,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
   setPriceRange,
   category,
   setCategory,
-  handleBrandChange,
+  handleBrandChange, // not currently used directly
   handleCategoryChange,
 }) => {
   const { categoryOnlyData, brandOnlyData } = getData();
@@ -51,7 +51,10 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
     <>
       <div className="bg-background flex justify-between items-center md:hidden px-4 py-3 mt-5 shadow-md rounded-md">
         <h1 className="font-semibold text-xl">Filters</h1>
-        <FaFilter onClick={toggleFilter} className="text-foreground cursor-pointer" />
+        <FaFilter
+          onClick={toggleFilter}
+          className="text-foreground cursor-pointer"
+        />
       </div>
 
       {openFilter && (
@@ -78,7 +81,9 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
                     onChange={handleCategoryChange}
                     className="accent-primary w-5 h-5"
                   />
-                  <span className="cursor-pointer uppercase text-sm">{item}</span>
+                  <span className="cursor-pointer uppercase text-sm">
+                    {item}
+                  </span>
                 </div>
               ))}
             </div>
@@ -110,7 +115,9 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
             <Slider
               value={[priceRange[1]]}
               max={5000}
-              onValueChange={(val) => setPriceRange([priceRange[0], val[0]])}
+              onValueChange={(val) =>
+                setPriceRange([priceRange[0], val[0]])
+              }
               className="w-full"
             />
           </div>
@@ -135,4 +142,4 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
   );
 };
 
-export default MobileFilter
+export default MobileFilter;

@@ -1,22 +1,27 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { IoCartOutline } from "react-icons/io5";
+import type { Product } from "../types/product";
 
 interface ProductCardProps {
-  product: {
-    id: string | number;
-    title: string;
-    price: number;
-    images: string;
-  };
+  product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
+
+  const imageSrc = Array.isArray(product.images)
+    ? product.images[0]
+    : (product.images as unknown as string);
 
   return (
     <Card
@@ -26,7 +31,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     >
       <CardHeader className="p-0">
         <img
-          src={product.images}
+          src={imageSrc}
           alt={product.title}
           className="aspect-square w-full object-cover bg-muted"
         />
@@ -60,4 +65,4 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   );
 };
 
-export default ProductCard
+export default ProductCard;

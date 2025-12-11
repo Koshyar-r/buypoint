@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import Slider from "react-slick";
 import type { Settings } from "react-slick";
 import { getData } from "../context/DataContext";
-import type { Product } from "../context/DataContext";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -10,6 +9,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { Button } from "@/components/ui/button";
 import Category from "./Category";
+import type { Product } from "@/types/product";
 
 // Arrow button props
 interface ArrowProps {

@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import type { ChangeEvent } from "react";
+import { useEffect, useState, type FC, type ChangeEvent } from "react";
 import { getData } from "../context/DataContext";
 import FilterSection from "../components/FilterSection";
 import Loading from "../assets/Loading4.webm";
@@ -8,9 +7,9 @@ import Pagination from "../components/Pagination";
 import Lottie from "lottie-react";
 import notfound from "../assets/notfound.json";
 import MobileFilter from "../components/MobileFilter";
-import type { Product } from "../context/DataContext";
+import type { Product } from "../types/product";
 
-const Products: React.FC = () => {
+const Products: FC = () => {
   const { data, fetchAllProducts } = getData();
 
   const [search, setSearch] = useState<string>("");
@@ -20,18 +19,12 @@ const Products: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
 
-  // -----------------------------
-  // Run ONLY once on mount
-  // -----------------------------
   useEffect(() => {
     fetchAllProducts();
     window.scrollTo(0, 0);
-  }, []);
+  }, [fetchAllProducts]);
 
-  // -----------------------------
-  // Handlers
-  // -----------------------------
-  const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCategory(e.target.value);
     setPage(1);
   };
@@ -46,11 +39,8 @@ const Products: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
-  // -----------------------------
-  // Filter Logic
-  // -----------------------------
   const filteredData: Product[] =
-    data?.filter((item: Product) => {
+    data?.filter((item) => {
       return (
         item.title.toLowerCase().includes(search.toLowerCase()) &&
         (category === "All" || item.category === category) &&
@@ -62,9 +52,6 @@ const Products: React.FC = () => {
 
   const dynamicPage = Math.ceil(filteredData.length / 8);
 
-  // -----------------------------
-  // Render
-  // -----------------------------
   return (
     <div>
       <div className="max-w-6xl mx-auto px-4 mb-10">
@@ -134,4 +121,4 @@ const Products: React.FC = () => {
   );
 };
 
-export default Products
+export default Products;

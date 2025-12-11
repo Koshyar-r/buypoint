@@ -1,77 +1,69 @@
-import axios from "axios";
-import React, { createContext, useContext, useState } from "react";
-
-export interface Product {
-  id: number;
-  title: string;
-  description: string;
-  brand: string;
-  category: string;
-  images: string[];
-  [key: string]: any; // allow extra fields from API
-}
+// src/context/DataContext.tsx
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
+import type { Product } from "../types/product";
 
 interface DataContextType {
   data: Product[];
-  setData: React.Dispatch<React.SetStateAction<Product[]>>;
-  fetchAllProducts: () => Promise<void>;
   categoryOnlyData: string[];
   brandOnlyData: string[];
+  fetchAllProducts: () => Promise<void>;
 }
 
-export const DataContext = createContext<DataContextType | null>(null);
+const DataContext = createContext<DataContextType | undefined>(undefined);
 
-export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<Product[]>([]);
+  const [categoryOnlyData, setCategoryOnlyData] = useState<string[]>([]);
+  const [brandOnlyData, setBrandOnlyData] = useState<string[]>([]);
 
-  const fetchAllProducts = async () => {
+  const fetchAllProducts = useCallback(async () => {
     try {
-      const res = await axios.get("https://dummyjson.com/products?limit=150");
-      const productsData = res.data.products;
+      // 🔧 Replace this with your real API
+      const res = await fetch("https://dummyjson.com/products?limit=100");
+      const json = await res.json();
 
-      // Ensure images is always an array
-      const cleaned = productsData.map((p: any) => ({
-        ...p,
-        images: Array.isArray(p.images) ? p.images : [p.thumbnail],
+      const products: Product[] = json.products.map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        price: p.price,
+        images: Array.isArray(p.images) ? p.images : [p.thumbnail ?? ""],
+        brand: p.brand,
+        category: p.category,
+        description: p.description,
+        discountPercentage: p.discountPercentage ?? 0,
       }));
 
-      setData(cleaned);
+      setData(products);
+
+      const categories = Array.from(
+        new Set(products.map((p) => p.category))
+      ).sort();
+      const brands = Array.from(new Set(products.map((p) => p.brand))).sort();
+
+      setCategoryOnlyData(categories);
+      setBrandOnlyData(brands);
     } catch (error) {
-      console.log(error);
+      console.error("Failed to fetch products", error);
     }
-  };
-
-  const getUniqueCategory = (arr: Product[], property: keyof Product) => {
-    let values = arr.map((item) => item[property]);
-    return ["All", ...new Set(values)];
-  };
-
-  const categoryOnlyData = getUniqueCategory(data, "category");
-  const brandOnlyData = getUniqueCategory(data, "brand");
+  }, []);
 
   return (
     <DataContext.Provider
-      value={{
-        data,
-        setData,
-        fetchAllProducts,
-        categoryOnlyData,
-        brandOnlyData,
-      }}
+      value={{ data, categoryOnlyData, brandOnlyData, fetchAllProducts }}
     >
       {children}
     </DataContext.Provider>
   );
 };
 
-// ----------------------
-
 export const getData = () => {
   const ctx = useContext(DataContext);
-  if (!ctx) {
-    throw new Error("getData must be used inside <DataProvider />");
-  }
+  if (!ctx) throw new Error("getData must be used inside <DataProvider>");
   return ctx;
-}
+};
