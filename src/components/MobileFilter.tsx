@@ -38,7 +38,6 @@ const MobileFilter: FC<MobileFilterProps> = ({
   setPriceRange,
   category,
   setCategory,
-  handleBrandChange, // not currently used directly
   handleCategoryChange,
 }) => {
   const { categoryOnlyData, brandOnlyData } = getData();

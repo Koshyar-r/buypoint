@@ -33,7 +33,6 @@ const FilterSection: FC<FilterSectionProps> = ({
   setPriceRange,
   category,
   setCategory, // currently unused directly
-  handleBrandChange, // unused but kept in props for parity
   handleCategoryChange,
 }) => {
   const { categoryOnlyData, brandOnlyData } = getData();
