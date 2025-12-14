@@ -10,6 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { IoCartOutline } from "react-icons/io5";
 import type { Product } from "../types/product";
+import { useUser } from "@clerk/clerk-react";
+import { toast } from "react-toastify";
 
 interface ProductCardProps {
   product: Product;
@@ -18,10 +20,22 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { isSignedIn } = useUser();
 
   const imageSrc = Array.isArray(product.images)
     ? product.images[0]
     : (product.images as unknown as string);
+
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    if (!isSignedIn) {
+      toast.error("Sign in first");
+      return;
+    }
+
+    addToCart(product);
+  };
 
   return (
     <Card
@@ -51,10 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       <CardFooter className="p-4 pt-0">
         <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart(product);
-          }}
+          onClick={handleAddToCart}
           className="w-full flex items-center justify-center gap-2 font-semibold"
         >
           <IoCartOutline className="w-5 h-5" />

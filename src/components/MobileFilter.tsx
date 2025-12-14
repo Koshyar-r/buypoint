@@ -23,7 +23,6 @@ interface MobileFilterProps {
   setPriceRange: (val: [number, number]) => void;
   category: string;
   setCategory: (val: string) => void;
-  handleBrandChange: (e: ChangeEvent<HTMLSelectElement>) => void;
   handleCategoryChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -37,7 +36,7 @@ const MobileFilter: FC<MobileFilterProps> = ({
   priceRange,
   setPriceRange,
   category,
-  setCategory,
+  setCategory, // used in reset
   handleCategoryChange,
 }) => {
   const { categoryOnlyData, brandOnlyData } = getData();
@@ -70,6 +69,19 @@ const MobileFilter: FC<MobileFilterProps> = ({
           <div className="space-y-2">
             <h1 className="text-lg font-semibold">Category</h1>
             <div className="flex flex-col gap-2">
+              {/* All option */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="All"
+                  checked={category === "All"}
+                  value="All"
+                  onChange={handleCategoryChange}
+                  className="accent-primary w-5 h-5"
+                />
+                <span className="cursor-pointer uppercase text-sm">All</span>
+              </div>
+
               {categoryOnlyData?.map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <input
@@ -93,9 +105,10 @@ const MobileFilter: FC<MobileFilterProps> = ({
             <h1 className="text-lg font-semibold">Brand</h1>
             <Select value={brand} onValueChange={(val) => setBrand(val)}>
               <SelectTrigger className="w-full h-12 text-base">
-                <SelectValue placeholder="Select Brand" />
+                <SelectValue placeholder="All brands" />
               </SelectTrigger>
               <SelectContent className="w-full">
+                <SelectItem value="All">All brands</SelectItem>
                 {brandOnlyData?.map((item, index) => (
                   <SelectItem key={index} value={item}>
                     {item?.toUpperCase()}
@@ -126,12 +139,12 @@ const MobileFilter: FC<MobileFilterProps> = ({
             variant="secondary"
             className="w-full h-12 mt-2"
             onClick={() => {
-              setSearch("");
-              setCategory("All");
-              setBrand("All");
-              setPriceRange([0, 5000]);
-              setOpenFilter(false);
-            }}
+            setSearch("");
+            setCategory("All");
+            setBrand("All");
+            setPriceRange([0, 5000]);
+            setOpenFilter(false);
+          }}
           >
             Reset Filters
           </Button>

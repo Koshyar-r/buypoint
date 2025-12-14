@@ -29,11 +29,6 @@ const Products: FC = () => {
     setPage(1);
   };
 
-  const handleBrandChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setBrand(e.target.value);
-    setPage(1);
-  };
-
   const pageHandler = (selectedPage: number) => {
     setPage(selectedPage);
     window.scrollTo(0, 0);
@@ -67,7 +62,6 @@ const Products: FC = () => {
           category={category}
           setCategory={setCategory}
           handleCategoryChange={handleCategoryChange}
-          handleBrandChange={handleBrandChange}
         />
 
         {data?.length > 0 ? (
@@ -83,7 +77,6 @@ const Products: FC = () => {
                 category={category}
                 setCategory={setCategory}
                 handleCategoryChange={handleCategoryChange}
-                handleBrandChange={handleBrandChange}
               />
 
               {filteredData.length > 0 ? (

@@ -20,8 +20,7 @@ interface FilterSectionProps {
   setPriceRange: (value: [number, number]) => void;
   category: string;
   setCategory: (value: string) => void;
-  handleBrandChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  handleCategoryChange: (e: ChangeEvent<HTMLInputElement>) => void; // ✅ checkbox
+  handleCategoryChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const FilterSection: FC<FilterSectionProps> = ({
@@ -32,7 +31,7 @@ const FilterSection: FC<FilterSectionProps> = ({
   priceRange,
   setPriceRange,
   category,
-  setCategory, // currently unused directly
+  setCategory, // used in reset
   handleCategoryChange,
 }) => {
   const { categoryOnlyData, brandOnlyData } = getData();
@@ -51,6 +50,19 @@ const FilterSection: FC<FilterSectionProps> = ({
       <div className="space-y-2">
         <h1 className="text-lg font-semibold mb-2">Category</h1>
         <div className="flex flex-col gap-2">
+          {/* All option */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="All"
+              checked={category === "All"}
+              value="All"
+              onChange={handleCategoryChange}
+              className="accent-primary w-5 h-5"
+            />
+            <span className="cursor-pointer uppercase text-sm">All</span>
+          </div>
+
           {categoryOnlyData?.map((item, index) => (
             <div key={index} className="flex items-center gap-2">
               <input
@@ -72,9 +84,10 @@ const FilterSection: FC<FilterSectionProps> = ({
         <h1 className="text-lg font-semibold mb-2">Brand</h1>
         <Select value={brand} onValueChange={(val) => setBrand(val)}>
           <SelectTrigger className="w-full h-12 text-base">
-            <SelectValue placeholder="Select Brand" />
+            <SelectValue placeholder="All brands" />
           </SelectTrigger>
           <SelectContent className="w-full">
+            <SelectItem value="All">All brands</SelectItem>
             {brandOnlyData?.map((item, index) => (
               <SelectItem key={index} value={item}>
                 {item}

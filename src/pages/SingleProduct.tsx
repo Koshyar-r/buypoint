@@ -1,9 +1,9 @@
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import Loading from "../assets/Loading4.webm"
-import { IoCartOutline } from "react-icons/io5"
-import { useCart } from "../context/CartContext"
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Loading from "../assets/Loading4.webm";
+import { IoCartOutline } from "react-icons/io5";
+import { useCart } from "../context/CartContext";
 
 import {
   Breadcrumb,
@@ -12,41 +12,35 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator,
   BreadcrumbPage,
-} from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
-interface Product {
-  id: number
-  title: string
-  brand: string
-  category: string
-  price: number
-  discountPercentage: number
-  description: string
-  images: string[]
-}
+import type { Product } from "../types/product";
+import { useUser } from "@clerk/clerk-react";
+import { toast } from "react-toastify";
 
 const SingleProduct = () => {
-  const params = useParams()
-  const [singleProduct, setSingleProduct] = useState<Product | null>(null)
-  const { addToCart } = useCart()
+  const params = useParams();
+  const [singleProduct, setSingleProduct] = useState<Product | null>(null);
+  const { addToCart } = useCart();
+  const { isSignedIn } = useUser();
 
   const getSingleProduct = async () => {
     try {
       const res = await axios.get<Product>(
         `https://dummyjson.com/products/${params.id}`
-      )
-      setSingleProduct(res.data)
+      );
+      setSingleProduct(res.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
-    getSingleProduct()
-  }, [])
+    getSingleProduct();
+  }, []);
 
   if (!singleProduct)
     return (
@@ -55,12 +49,21 @@ const SingleProduct = () => {
           <source src={Loading} type="video/webm" />
         </video>
       </div>
-    )
+    );
 
   const originalPrice = Math.round(
     singleProduct.price +
       (singleProduct.price * singleProduct.discountPercentage) / 100
-  )
+  );
+
+  const handleAddToCart = () => {
+    if (!isSignedIn) {
+      toast.error("Sign in first");
+      return;
+    }
+
+    addToCart(singleProduct);
+  };
 
   return (
     <div className="px-4 md:px-0 pb-10">
@@ -127,7 +130,7 @@ const SingleProduct = () => {
             {singleProduct.description}
           </p>
 
-          {/* Quantity Selector */}
+          {/* Quantity Selector (visual only for now) */}
           <div className="flex items-center gap-4">
             <label className="text-sm font-medium text-foreground">
               Quantity:
@@ -140,7 +143,7 @@ const SingleProduct = () => {
             <Button
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2"
-              onClick={() => addToCart(singleProduct)}
+              onClick={handleAddToCart}
             >
               <IoCartOutline className="w-6 h-6" />
               Add to Cart
@@ -149,7 +152,7 @@ const SingleProduct = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SingleProduct
+export default SingleProduct;
