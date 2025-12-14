@@ -7,17 +7,25 @@ interface ItemType {
   [key: string]: any;
 }
 
+const MAX_CATEGORIES = 8; // 👈 change this to however many you want
+
 const Category = () => {
   const navigate = useNavigate();
   const { data } = getData();
 
-  const getUniqueCategory = <T, K extends keyof T>(arr: T[] | undefined, key: K): T[K][] => {
+  const getUniqueCategory = <T, K extends keyof T>(
+    arr: T[] | undefined,
+    key: K
+  ): T[K][] => {
     if (!arr) return [];
     const values = arr.map((item) => item[key]);
     return [...new Set(values)];
   };
 
-  const categoryOnlyData = getUniqueCategory<ItemType, "category">(data, "category");
+  const categoryOnlyData = getUniqueCategory<ItemType, "category">(
+    data,
+    "category"
+  ).slice(0, MAX_CATEGORIES); // 👈 limit how many categories we render
 
   return (
     <div className="bg-background">
@@ -42,4 +50,4 @@ const Category = () => {
   );
 };
 
-export default Category
+export default Category;
