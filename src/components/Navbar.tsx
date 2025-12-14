@@ -1,5 +1,9 @@
-// src/components/Navbar.tsx
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
 import { useState } from "react";
 import { IoCartOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
@@ -23,7 +27,6 @@ const Navbar: React.FC<NavbarProps> = ({ location, getLocation }) => {
   return (
     <header className="bg-background text-foreground shadow-md py-3 px-4 md:px-0">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
-        
         {/* Logo + Location */}
         <div className="flex gap-7 items-center">
           <Link to="/" className="flex items-center">
@@ -41,7 +44,11 @@ const Navbar: React.FC<NavbarProps> = ({ location, getLocation }) => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `${isActive ? "border-b-2 border-primary text-primary" : "text-foreground"} transition-all`
+                `${
+                  isActive
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-foreground"
+                } transition-all`
               }
             >
               Home
@@ -50,7 +57,11 @@ const Navbar: React.FC<NavbarProps> = ({ location, getLocation }) => {
             <NavLink
               to="/products"
               className={({ isActive }) =>
-                `${isActive ? "border-b-2 border-primary text-primary" : "text-foreground"} transition-all`
+                `${
+                  isActive
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-foreground"
+                } transition-all`
               }
             >
               Products
@@ -59,7 +70,11 @@ const Navbar: React.FC<NavbarProps> = ({ location, getLocation }) => {
             <NavLink
               to="/about"
               className={({ isActive }) =>
-                `${isActive ? "border-b-2 border-primary text-primary" : "text-foreground"} transition-all`
+                `${
+                  isActive
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-foreground"
+                } transition-all`
               }
             >
               About
@@ -68,24 +83,30 @@ const Navbar: React.FC<NavbarProps> = ({ location, getLocation }) => {
             <NavLink
               to="/contact"
               className={({ isActive }) =>
-                `${isActive ? "border-b-2 border-primary text-primary" : "text-foreground"} transition-all`
+                `${
+                  isActive
+                    ? "border-b-2 border-primary text-primary"
+                    : "text-foreground"
+                } transition-all`
               }
             >
               Contact
             </NavLink>
           </ul>
 
-          {/* Cart */}
-          <Link to="/cart" className="relative">
-            <IoCartOutline className="h-6 w-6 text-foreground" />
-            {cartItem.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-accent-foreground text-accent text-xs rounded-full px-2">
-                {cartItem.length}
-              </span>
-            )}
-          </Link>
+          {/* Cart – ONLY when authenticated */}
+          <SignedIn>
+            <Link to="/cart" className="relative">
+              <IoCartOutline className="h-6 w-6 text-foreground" />
+              {cartItem.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-accent-foreground text-accent text-xs rounded-full px-2">
+                  {cartItem.length}
+                </span>
+              )}
+            </Link>
+          </SignedIn>
 
-          {/* Auth Buttons */}
+          {/* Auth Buttons (desktop) */}
           <div className="hidden md:flex items-center gap-2">
             <SignedOut>
               <SignInButton>
@@ -128,4 +149,4 @@ const Navbar: React.FC<NavbarProps> = ({ location, getLocation }) => {
   );
 };
 
-export default Navbar
+export default Navbar;

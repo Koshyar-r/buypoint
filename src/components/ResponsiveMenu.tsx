@@ -1,16 +1,16 @@
-import { UserButton, useUser } from "@clerk/clerk-react";
+import {
+  UserButton,
+  useUser,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+} from "@clerk/clerk-react";
 import { HiX } from "react-icons/hi";
 import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import React from "react";
-
-export interface LocationType {
-  county?: string;
-  state?: string;
-  postcode?: string;
-  country?: string;
-}
-
+import { Button } from "@/components/ui/button";
+import type { LocationType } from "./LocationPicker";
 
 interface ResponsiveMenuProps {
   openNav: boolean;
@@ -19,7 +19,10 @@ interface ResponsiveMenuProps {
   getLocation: () => void;
 }
 
-const ResponsiveMenu: React.FC<ResponsiveMenuProps> = ({ openNav, setOpenNav }) => {
+const ResponsiveMenu: React.FC<ResponsiveMenuProps> = ({
+  openNav,
+  setOpenNav,
+}) => {
   const { user } = useUser();
 
   return (
@@ -46,12 +49,38 @@ const ResponsiveMenu: React.FC<ResponsiveMenuProps> = ({ openNav, setOpenNav }) 
 
       <div>
         {/* User Info */}
-        <div className="flex items-center justify-start gap-3 mt-4">
-          {user ? <UserButton /> : <FaUserCircle size={50} />}
-          <div>
-            <h1 className="font-semibold">Hello, {user?.firstName}</h1>
-            <h1 className="text-sm text-muted-foreground">Premium User</h1>
-          </div>
+        <div className="flex flex-col gap-3 mt-4">
+          <SignedIn>
+            <div className="flex items-center justify-start gap-3">
+              <UserButton />
+              <div>
+                <h1 className="font-semibold">
+                  Hello, {user?.firstName ?? "user"}
+                </h1>
+                <h1 className="text-sm text-muted-foreground">
+                  Premium User
+                </h1>
+              </div>
+            </div>
+          </SignedIn>
+
+          <SignedOut>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <FaUserCircle size={50} />
+                <div>
+                  <h1 className="font-semibold">Welcome, guest</h1>
+                  <h1 className="text-sm text-muted-foreground">
+                    Please sign in to continue
+                  </h1>
+                </div>
+              </div>
+
+              <SignInButton>
+                <Button size="sm">Sign In</Button>
+              </SignInButton>
+            </div>
+          </SignedOut>
         </div>
 
         {/* Nav Links */}
@@ -95,4 +124,4 @@ const ResponsiveMenu: React.FC<ResponsiveMenuProps> = ({ openNav, setOpenNav }) 
   );
 };
 
-export default ResponsiveMenu
+export default ResponsiveMenu;
